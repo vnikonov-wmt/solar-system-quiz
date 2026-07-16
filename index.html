@@ -21,6 +21,7 @@
       padding: 20px;
     }
 
+    /* Звёздный фон */
     body::before {
       content: '';
       position: fixed;
@@ -39,6 +40,7 @@
       pointer-events: none;
     }
 
+    /* Карточка квиза */
     .quiz-card {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
@@ -47,19 +49,57 @@
       padding: 40px;
       max-width: 560px;
       width: 100%;
+      position: relative;
     }
 
-    .header {
+    /* ===================== */
+    /* ЭКРАН СТАРТА          */
+    /* ===================== */
+    .start-screen {
       text-align: center;
-      margin-bottom: 28px;
     }
 
-    .header h1 {
+    .big-emoji {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    h1 {
       color: white;
-      font-size: 24px;
+      font-size: 30px;
       font-weight: 700;
     }
 
+    .description {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 16px;
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+
+    .start-btn {
+      margin-top: 28px;
+      padding: 16px 48px;
+      background: #FBBF24;
+      color: #1B1464;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .start-btn:hover {
+      background: #F59E0B;
+      transform: translateY(-2px);
+    }
+
+    /* ===================== */
+    /* ЭКРАН ВОПРОСА         */
+    /* ===================== */
     .progress-bar-bg {
       background: rgba(255, 255, 255, 0.2);
       border-radius: 100px;
@@ -88,6 +128,7 @@
       margin-bottom: 24px;
     }
 
+    /* Кнопки ответов */
     .answers {
       display: flex;
       flex-direction: column;
@@ -128,6 +169,31 @@
       transform: none;
     }
 
+    /* Объяснение */
+    .feedback {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+
+    .feedback.correct {
+      background: rgba(52, 211, 153, 0.15);
+      color: #6EE7B7;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    .feedback.wrong {
+      background: rgba(248, 113, 113, 0.15);
+      color: #FCA5A5;
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    /* Кнопка "Далее" */
     .next-btn {
       display: none;
       width: 100%;
@@ -151,6 +217,9 @@
       transform: translateY(-1px);
     }
 
+    /* ===================== */
+    /* ЭКРАН РЕЗУЛЬТАТА      */
+    /* ===================== */
     .result-screen {
       display: none;
       text-align: center;
@@ -206,12 +275,23 @@
 <body>
 <div class="quiz-card">
 
-  <div class="header">
-    <h1>🚀 Космический квиз</h1>
+  <!-- ======================== -->
+  <!-- ЭКРАН СТАРТА             -->
+  <!-- ======================== -->
+  <div class="start-screen" id="startScreen">
+    <span class="big-emoji">🚀</span>
+    <h1>Космический квиз</h1>
+    <p class="description">
+      5 вопросов о нашей Солнечной системе.<br>
+      Проверь, что ты знаешь о космосе!
+    </p>
+    <button class="start-btn" onclick="startQuiz()">Начать →</button>
   </div>
 
-  <!-- Экран вопроса -->
-  <div id="quizScreen">
+  <!-- ======================== -->
+  <!-- ЭКРАН ВОПРОСА            -->
+  <!-- ======================== -->
+  <div id="quizScreen" style="display: none;">
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
     </div>
@@ -221,12 +301,16 @@
 
     <div class="answers" id="answersContainer"></div>
 
+    <div class="feedback" id="feedback"></div>
+
     <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
       Следующий вопрос →
     </button>
   </div>
 
-  <!-- Экран результата -->
+  <!-- ======================== -->
+  <!-- ЭКРАН РЕЗУЛЬТАТА         -->
+  <!-- ======================== -->
   <div class="result-screen" id="resultScreen">
     <span class="result-emoji" id="resultEmoji">⭐</span>
     <div class="result-title">Квиз завершён!</div>
@@ -238,51 +322,73 @@
 </div>
 
 <script>
+  // ========================
+  // ВОПРОСЫ
+  // ========================
   const questions = [
     {
       question: "Сколько планет в нашей Солнечной системе?",
       answers: ["6", "7", "8", "9"],
-      correct: 2
+      correct: 2,
+      explanation: "Их 8: Меркурий, Венера, Земля, Марс, Юпитер, Сатурн, Уран и Нептун. Плутон в 2006 году переквалифицировали в карликовую планету."
     },
     {
       question: "Какая планета Солнечной системы самая большая?",
       answers: ["Сатурн", "Нептун", "Земля", "Юпитер"],
-      correct: 3
+      correct: 3,
+      explanation: "Юпитер! Он такой огромный, что внутри него поместились бы больше 1300 Земель."
     },
     {
       question: "Как называется галактика, в которой мы живём?",
       answers: ["Андромеда", "Млечный Путь", "Треугольник", "Водоворот"],
-      correct: 1
+      correct: 1,
+      explanation: "Млечный Путь — спиральная галактика. В ней около 200–400 миллиардов звёзд, и наше Солнце — одна из них."
     },
     {
       question: "Примерно за сколько минут свет от Солнца доходит до Земли?",
       answers: ["1 минуту", "8 минут", "30 минут", "2 часа"],
-      correct: 1
+      correct: 1,
+      explanation: "8 минут! Свет летит со скоростью 300 000 км/с — и всё равно ему нужно 8 минут, чтобы преодолеть расстояние от Солнца до нас."
     },
     {
       question: "У какой планеты самые заметные кольца?",
       answers: ["Юпитер", "Уран", "Сатурн", "Нептун"],
-      correct: 2
+      correct: 2,
+      explanation: "Сатурн! Его кольца состоят из льда и камней. Их можно разглядеть даже в небольшой любительский телескоп."
     }
   ];
 
+  // ========================
+  // СОСТОЯНИЕ
+  // ========================
   let currentQuestion = 0;
   let score = 0;
   let answered = false;
 
-  // Квиз начинается сразу
-  showQuestion();
+  // ========================
+  // ФУНКЦИИ
+  // ========================
+
+  function startQuiz() {
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('quizScreen').style.display = 'block';
+    showQuestion();
+  }
 
   function showQuestion() {
     const q = questions[currentQuestion];
     answered = false;
 
+    // Прогресс
     document.getElementById('questionCounter').textContent =
       `Вопрос ${currentQuestion + 1} из ${questions.length}`;
     document.getElementById('progressBar').style.width =
       `${(currentQuestion / questions.length) * 100}%`;
+
+    // Текст вопроса
     document.getElementById('questionText').textContent = q.question;
 
+    // Кнопки ответов
     const container = document.getElementById('answersContainer');
     container.innerHTML = '';
     q.answers.forEach((answer, index) => {
@@ -293,6 +399,10 @@
       container.appendChild(btn);
     });
 
+    // Прячем фидбэк и кнопку "Далее"
+    const feedback = document.getElementById('feedback');
+    feedback.className = 'feedback';
+    feedback.textContent = '';
     document.getElementById('nextBtn').className = 'next-btn';
   }
 
@@ -302,16 +412,25 @@
 
     const q = questions[currentQuestion];
     const buttons = document.querySelectorAll('.answer-btn');
+
+    // Блокируем все кнопки
     buttons.forEach(btn => btn.disabled = true);
+
+    const feedback = document.getElementById('feedback');
 
     if (selectedIndex === q.correct) {
       buttons[selectedIndex].classList.add('correct');
       score++;
+      feedback.className = 'feedback correct show';
+      feedback.textContent = '✓ Верно! ' + q.explanation;
     } else {
       buttons[selectedIndex].classList.add('wrong');
       buttons[q.correct].classList.add('correct');
+      feedback.className = 'feedback wrong show';
+      feedback.textContent = '✗ Не совсем. ' + q.explanation;
     }
 
+    // Кнопка "Далее"
     const nextBtn = document.getElementById('nextBtn');
     nextBtn.textContent = currentQuestion < questions.length - 1
       ? 'Следующий вопрос →'
@@ -336,13 +455,13 @@
     let emoji, message;
     if (score === 5) {
       emoji = '🏆';
-      message = 'Идеальный результат! Ты настоящий астроном.';
+      message = 'Идеальный результат! Ты настоящий астроном. Может, когда-нибудь откроешь новую планету?';
     } else if (score >= 3) {
       emoji = '🌟';
       message = 'Отличный результат! Попробуй ещё раз, чтобы получить 5 из 5.';
     } else {
       emoji = '🚀';
-      message = 'Хорошее начало! Попробуй ещё раз.';
+      message = 'Хорошее начало! Космос — огромная тема. Попробуй ещё раз — в этот раз будет проще.';
     }
 
     document.getElementById('resultEmoji').textContent = emoji;
