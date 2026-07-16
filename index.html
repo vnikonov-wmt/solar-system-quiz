@@ -21,7 +21,6 @@
       padding: 20px;
     }
 
-    /* Звёздный фон */
     body::before {
       content: '';
       position: fixed;
@@ -40,7 +39,6 @@
       pointer-events: none;
     }
 
-    /* Карточка квиза */
     .quiz-card {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
@@ -49,15 +47,10 @@
       padding: 40px;
       max-width: 560px;
       width: 100%;
-      position: relative;
     }
 
-    /* ===================== */
-    /* ЭКРАН СТАРТА          */
-    /* ===================== */
-    .start-screen {
-      text-align: center;
-    }
+    /* Экран старта */
+    .start-screen { text-align: center; }
 
     .big-emoji {
       font-size: 56px;
@@ -76,6 +69,17 @@
       font-size: 16px;
       line-height: 1.6;
       margin-top: 12px;
+    }
+
+    .pool-note {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 14px;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 100px;
+      color: #FBBF24;
+      font-size: 13px;
     }
 
     .start-btn {
@@ -97,9 +101,7 @@
       transform: translateY(-2px);
     }
 
-    /* ===================== */
-    /* ЭКРАН ВОПРОСА         */
-    /* ===================== */
+    /* Экран вопроса */
     .progress-bar-bg {
       background: rgba(255, 255, 255, 0.2);
       border-radius: 100px;
@@ -128,7 +130,6 @@
       margin-bottom: 24px;
     }
 
-    /* Кнопки ответов */
     .answers {
       display: flex;
       flex-direction: column;
@@ -169,7 +170,6 @@
       transform: none;
     }
 
-    /* Объяснение */
     .feedback {
       margin-top: 18px;
       padding: 14px 16px;
@@ -193,7 +193,6 @@
       border: 1px solid rgba(248, 113, 113, 0.3);
     }
 
-    /* Кнопка "Далее" */
     .next-btn {
       display: none;
       width: 100%;
@@ -217,9 +216,7 @@
       transform: translateY(-1px);
     }
 
-    /* ===================== */
-    /* ЭКРАН РЕЗУЛЬТАТА      */
-    /* ===================== */
+    /* Экран результата */
     .result-screen {
       display: none;
       text-align: center;
@@ -250,6 +247,12 @@
       color: rgba(255, 255, 255, 0.75);
       font-size: 16px;
       line-height: 1.55;
+      margin-bottom: 8px;
+    }
+
+    .result-hint {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 13px;
       margin-bottom: 28px;
     }
 
@@ -275,22 +278,20 @@
 <body>
 <div class="quiz-card">
 
-  <!-- ======================== -->
-  <!-- ЭКРАН СТАРТА             -->
-  <!-- ======================== -->
+  <!-- Экран старта -->
   <div class="start-screen" id="startScreen">
     <span class="big-emoji">🚀</span>
     <h1>Космический квиз</h1>
     <p class="description">
       5 вопросов о нашей Солнечной системе.<br>
-      Проверь, что ты знаешь о космосе!
+      Каждый раз — новый набор вопросов!
     </p>
+    <span class="pool-note">🎲 20 вопросов в пуле</span>
+    <br>
     <button class="start-btn" onclick="startQuiz()">Начать →</button>
   </div>
 
-  <!-- ======================== -->
-  <!-- ЭКРАН ВОПРОСА            -->
-  <!-- ======================== -->
+  <!-- Экран вопроса -->
   <div id="quizScreen" style="display: none;">
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
@@ -308,24 +309,23 @@
     </button>
   </div>
 
-  <!-- ======================== -->
-  <!-- ЭКРАН РЕЗУЛЬТАТА         -->
-  <!-- ======================== -->
+  <!-- Экран результата -->
   <div class="result-screen" id="resultScreen">
     <span class="result-emoji" id="resultEmoji">⭐</span>
     <div class="result-title">Квиз завершён!</div>
     <div class="result-score" id="resultScore">0/5</div>
     <div class="result-message" id="resultMessage"></div>
-    <button class="restart-btn" onclick="restartQuiz()">Попробовать ещё раз</button>
+    <div class="result-hint">Каждый раз — новые вопросы из 20</div>
+    <button class="restart-btn" onclick="restartQuiz()">Сыграть ещё раз</button>
   </div>
 
 </div>
 
 <script>
   // ========================
-  // ВОПРОСЫ
+  // ПУЛ ИЗ 20 ВОПРОСОВ
   // ========================
-  const questions = [
+  const allQuestions = [
     {
       question: "Сколько планет в нашей Солнечной системе?",
       answers: ["6", "7", "8", "9"],
@@ -348,47 +348,165 @@
       question: "Примерно за сколько минут свет от Солнца доходит до Земли?",
       answers: ["1 минуту", "8 минут", "30 минут", "2 часа"],
       correct: 1,
-      explanation: "8 минут! Свет летит со скоростью 300 000 км/с — и всё равно ему нужно 8 минут, чтобы преодолеть расстояние от Солнца до нас."
+      explanation: "8 минут! Свет летит со скоростью 300 000 км/с — и всё равно ему нужно 8 минут, чтобы добраться от Солнца до нас."
     },
     {
       question: "У какой планеты самые заметные кольца?",
       answers: ["Юпитер", "Уран", "Сатурн", "Нептун"],
       correct: 2,
-      explanation: "Сатурн! Его кольца состоят из льда и камней. Их можно разглядеть даже в небольшой любительский телескоп."
+      explanation: "Сатурн! Его кольца состоят из льда и камней — их видно даже в небольшой любительский телескоп."
+    },
+    {
+      question: "Какая планета ближайшая к Солнцу?",
+      answers: ["Венера", "Земля", "Меркурий", "Марс"],
+      correct: 2,
+      explanation: "Меркурий! Он делает полный оборот вокруг Солнца всего за 88 земных дней."
+    },
+    {
+      question: "Какая планета самая горячая в Солнечной системе?",
+      answers: ["Меркурий", "Венера", "Марс", "Юпитер"],
+      correct: 1,
+      explanation: "Венера! Хотя Меркурий ближе к Солнцу, у Венеры плотная атмосфера из углекислого газа — парниковый эффект разгоняет температуру до +465°C."
+    },
+    {
+      question: "Сколько лун у Марса?",
+      answers: ["0", "1", "2", "4"],
+      correct: 2,
+      explanation: "Две! Фобос и Деймос — маленькие и неправильной формы, похожи на картошку."
+    },
+    {
+      question: "Как зовут первого человека, побывавшего в космосе?",
+      answers: ["Нил Армстронг", "Юрий Гагарин", "Алексей Леонов", "Валентина Терешкова"],
+      correct: 1,
+      explanation: "Юрий Гагарин! 12 апреля 1961 года он облетел Землю за 108 минут на корабле «Восток-1»."
+    },
+    {
+      question: "В каком году человек впервые ступил на Луну?",
+      answers: ["1957", "1961", "1969", "1972"],
+      correct: 2,
+      explanation: "1969! Нил Армстронг и Базз Олдрин приземлились на Луне 20 июля на корабле «Аполлон-11»."
+    },
+    {
+      question: "Какая планета самая дальняя от Солнца?",
+      answers: ["Уран", "Плутон", "Нептун", "Сатурн"],
+      correct: 2,
+      explanation: "Нептун! Плутон иногда оказывается дальше, но он больше не считается планетой. Нептун — крайняя точка."
+    },
+    {
+      question: "Что такое световой год?",
+      answers: [
+        "Очень длинный год",
+        "Год на другой планете",
+        "Расстояние, которое свет проходит за год",
+        "Скорость вращения Земли"
+      ],
+      correct: 2,
+      explanation: "Световой год — единица расстояния, а не времени! Это примерно 9,5 триллиона километров."
+    },
+    {
+      question: "Как называется самый большой вулкан в Солнечной системе?",
+      answers: ["Эверест", "Этна", "Олимп", "Мауна-Кеа"],
+      correct: 2,
+      explanation: "Олимп на Марсе! Его высота — 21 км, что в 2,5 раза выше Эвереста. И он такой широкий, что с его вершины не видно края."
+    },
+    {
+      question: "На какой планете сутки длиннее, чем год?",
+      answers: ["Марс", "Юпитер", "Венера", "Уран"],
+      correct: 2,
+      explanation: "Венера! Она вращается вокруг своей оси очень медленно — венерианские сутки длятся 243 земных дня, а год — всего 225."
+    },
+    {
+      question: "Как называется явление, когда Луна полностью закрывает Солнце?",
+      answers: ["Лунное затмение", "Солнечное затмение", "Северное сияние", "Метеоритный дождь"],
+      correct: 1,
+      explanation: "Солнечное затмение! Луна точно встаёт между Землёй и Солнцем. Полное затмение длится всего несколько минут — редкое зрелище."
+    },
+    {
+      question: "Сколько звёзд в нашей Солнечной системе?",
+      answers: ["1", "2", "8", "Миллионы"],
+      correct: 0,
+      explanation: "Одна — наше Солнце! Солнечная система — это Солнце и всё, что вращается вокруг него. Другие звёзды — это уже другие системы."
+    },
+    {
+      question: "Как называется ближайшая к нам звезда (кроме Солнца)?",
+      answers: ["Сириус", "Бетельгейзе", "Проксима Центавра", "Вега"],
+      correct: 2,
+      explanation: "Проксима Центавра! Она находится в 4,24 световых года от нас. Если лететь туда на ракете с сегодняшней скоростью — займёт тысячи лет."
+    },
+    {
+      question: "Какая планета вращается как бы «на боку»?",
+      answers: ["Нептун", "Сатурн", "Марс", "Уран"],
+      correct: 3,
+      explanation: "Уран! Его ось наклонена на 98°. Это значит, что каждый полюс около 42 лет смотрит прямо на Солнце, а потом 42 года находится в темноте."
+    },
+    {
+      question: "Что такое метеор?",
+      answers: [
+        "Кусок Луны",
+        "Небесное тело, сгорающее в атмосфере",
+        "Маленькая планета",
+        "Спутник Марса"
+      ],
+      correct: 1,
+      explanation: "Метеор — это обломок камня или льда, который влетает в атмосферу и сгорает. Мы видим его как «падающую звезду»."
+    },
+    {
+      question: "Что такое чёрная дыра?",
+      answers: [
+        "Дыра в атмосфере Земли",
+        "Мёртвая планета",
+        "Объект, из которого не может вырваться даже свет",
+        "Тёмное пятно на Солнце"
+      ],
+      correct: 2,
+      explanation: "Чёрная дыра — это область с такой огромной гравитацией, что ничто не может её покинуть — даже свет. Именно поэтому мы не можем её «увидеть»."
     }
   ];
 
   // ========================
   // СОСТОЯНИЕ
   // ========================
+  let selectedQuestions = []; // 5 случайных вопросов на этот раз
   let currentQuestion = 0;
   let score = 0;
   let answered = false;
+
+  // ========================
+  // ПЕРЕМЕШИВАНИЕ (Fisher-Yates)
+  // ========================
+  function shuffleArray(array) {
+    const shuffled = [...array]; // копия, чтобы не трогать оригинал
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
 
   // ========================
   // ФУНКЦИИ
   // ========================
 
   function startQuiz() {
+    // Перемешиваем все 20 вопросов и берём первые 5
+    // Благодаря shuffle один и тот же вопрос не может встретиться дважды
+    selectedQuestions = shuffleArray(allQuestions).slice(0, 5);
+
     document.getElementById('startScreen').style.display = 'none';
     document.getElementById('quizScreen').style.display = 'block';
     showQuestion();
   }
 
   function showQuestion() {
-    const q = questions[currentQuestion];
+    const q = selectedQuestions[currentQuestion];
     answered = false;
 
-    // Прогресс
     document.getElementById('questionCounter').textContent =
-      `Вопрос ${currentQuestion + 1} из ${questions.length}`;
+      `Вопрос ${currentQuestion + 1} из ${selectedQuestions.length}`;
     document.getElementById('progressBar').style.width =
-      `${(currentQuestion / questions.length) * 100}%`;
-
-    // Текст вопроса
+      `${(currentQuestion / selectedQuestions.length) * 100}%`;
     document.getElementById('questionText').textContent = q.question;
 
-    // Кнопки ответов
     const container = document.getElementById('answersContainer');
     container.innerHTML = '';
     q.answers.forEach((answer, index) => {
@@ -399,7 +517,6 @@
       container.appendChild(btn);
     });
 
-    // Прячем фидбэк и кнопку "Далее"
     const feedback = document.getElementById('feedback');
     feedback.className = 'feedback';
     feedback.textContent = '';
@@ -410,10 +527,8 @@
     if (answered) return;
     answered = true;
 
-    const q = questions[currentQuestion];
+    const q = selectedQuestions[currentQuestion];
     const buttons = document.querySelectorAll('.answer-btn');
-
-    // Блокируем все кнопки
     buttons.forEach(btn => btn.disabled = true);
 
     const feedback = document.getElementById('feedback');
@@ -430,9 +545,8 @@
       feedback.textContent = '✗ Не совсем. ' + q.explanation;
     }
 
-    // Кнопка "Далее"
     const nextBtn = document.getElementById('nextBtn');
-    nextBtn.textContent = currentQuestion < questions.length - 1
+    nextBtn.textContent = currentQuestion < selectedQuestions.length - 1
       ? 'Следующий вопрос →'
       : 'Узнать результат →';
     nextBtn.className = 'next-btn show';
@@ -440,7 +554,7 @@
 
   function nextQuestion() {
     currentQuestion++;
-    if (currentQuestion < questions.length) {
+    if (currentQuestion < selectedQuestions.length) {
       showQuestion();
     } else {
       showResult();
@@ -450,7 +564,7 @@
   function showResult() {
     document.getElementById('quizScreen').style.display = 'none';
     document.getElementById('resultScreen').className = 'result-screen show';
-    document.getElementById('resultScore').textContent = `${score}/${questions.length}`;
+    document.getElementById('resultScore').textContent = `${score}/${selectedQuestions.length}`;
 
     let emoji, message;
     if (score === 5) {
@@ -458,10 +572,10 @@
       message = 'Идеальный результат! Ты настоящий астроном. Может, когда-нибудь откроешь новую планету?';
     } else if (score >= 3) {
       emoji = '🌟';
-      message = 'Отличный результат! Попробуй ещё раз, чтобы получить 5 из 5.';
+      message = 'Отличный результат! Попробуй ещё раз — вопросы будут другие.';
     } else {
       emoji = '🚀';
-      message = 'Хорошее начало! Космос — огромная тема. Попробуй ещё раз — в этот раз будет проще.';
+      message = 'Хорошее начало! Сыграй ещё раз — и узнаешь больше о космосе.';
     }
 
     document.getElementById('resultEmoji').textContent = emoji;
@@ -472,6 +586,8 @@
     currentQuestion = 0;
     score = 0;
     answered = false;
+    // При рестарте снова перемешиваем — новый набор вопросов
+    selectedQuestions = shuffleArray(allQuestions).slice(0, 5);
     document.getElementById('resultScreen').className = 'result-screen';
     document.getElementById('quizScreen').style.display = 'block';
     showQuestion();
